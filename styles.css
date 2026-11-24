@@ -38,7 +38,7 @@ svg { width: 1.125rem; height: 1.125rem; fill: none; stroke: currentColor; strok
 .wordmark { margin-top: .35rem; padding: .5rem .65rem; width: clamp(10rem, 48vw, 13.2rem); }
 .wordmark img { display: block; width: 100%; height: auto; }
 /* Recolor the existing opaque strokes; CSS filters preserve PNG transparency. */
-@media screen { :root[data-theme="dark"] .wordmark img { filter: brightness(0) invert(96%); } }
+@media screen { :root[data-theme="dark"] .wordmark img { filter: contrast(.75) brightness(1.35); } }
 h1 { text-align: center; margin: 1.2rem 0 1rem; font: 400 clamp(1.75rem, 7.4vw, 2.7rem)/1.12 Georgia, "Times New Roman", serif; }
 .search { position: relative; display: grid; grid-template-columns: 2.5rem minmax(0,1fr); align-items: center; min-height: 3.25rem; background: var(--field); border: 1px solid var(--line); border-radius: 9px; transition: border-color .15s ease-out; }
 .search:focus-within { border-color: var(--accent); }
