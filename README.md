@@ -2,6 +2,12 @@
 
 A mobile-first, bilingual guide to in-room television. No account, build step, network API, ads, trackers, or runtime dependencies.
 
+## Printable QR sign
+
+[Open the print-ready PDF](tv-channel-finder-qr.pdf) · [View or download the PNG](tv-channel-finder-qr.png)
+
+The sign is 5 × 7 inches. Print at actual size (100%) for those dimensions. It links to the public TV Channel Finder and does not display the URL as text.
+
 ## Update the lineup
 
 1. Edit **`channels.mjs`**. Each record has an `id` (TV channel number, stored as a string to preserve zeros), `identifier` (exactly as shown on the in-room TV guide), `name` (display name), `category` (controls which optional category filter includes the channel), and `aliases` (optional abbreviations and alternative names for search).
