@@ -7,7 +7,8 @@
   <meta name="description" content="Find your in-room TV channel at Beaver Creek Lodge by name or number.">
   <title>TV Channel Finder | Beaver Creek Lodge</title>
   <link rel="icon" href="./tv.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=categories-1">
+  <link rel="stylesheet" href="./styles.css?v=logo-dark-1">
+  <style>@media screen { :root[data-theme="dark"] .wordmark img { filter: url("#wordmark-dark"); } }</style>
   <script>
     try {
       if (localStorage.getItem('bcl-tv-theme') === 'light') {
@@ -19,6 +20,33 @@
   <script type="module" src="./app.mjs?v=categories-1"></script>
 </head>
 <body>
+  <svg class="logo-filter" aria-hidden="true" width="0" height="0" focusable="false" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <filter id="wordmark-dark" color-interpolation-filters="sRGB" x="0%" y="0%" width="100%" height="100%">
+        <!-- Derive the transparent shapes from the original JPEG; do not replace the wordmark. -->
+        <feColorMatrix in="SourceGraphic" result="letters" type="matrix" values="
+          0 0 0 0 1
+          0 0 0 0 1
+          0 0 0 0 1
+          -.37 -.37 -.37 0 1.08"/>
+        <feColorMatrix in="SourceGraphic" result="burgundy" type="matrix" values="
+          0 0 0 0 .93
+          0 0 0 0 .25
+          0 0 0 0 .40
+          2.15 -2.15 0 0 -.055"/>
+        <feColorMatrix in="SourceGraphic" result="teal" type="matrix" values="
+          0 0 0 0 .32
+          0 0 0 0 .68
+          0 0 0 0 .73
+          -2.5 1.3 1.2 0 -.055"/>
+        <feMerge>
+          <feMergeNode in="letters"/>
+          <feMergeNode in="burgundy"/>
+          <feMergeNode in="teal"/>
+        </feMerge>
+      </filter>
+    </defs>
+  </svg>
   <a class="skip-link" href="#channel-search" data-copy="skip">Skip to channel search</a>
   <main class="finder">
     <header class="masthead">
