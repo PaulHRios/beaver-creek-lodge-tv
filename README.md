@@ -10,11 +10,12 @@ A mobile-first, bilingual guide to in-room television. No account, build step, n
 4. Preview with `python3 -m http.server 8000`, then open `http://localhost:8000`. JavaScript modules require an HTTP server, not a double-click on the HTML file.
 5. Commit to `main`. GitHub Pages publishes the root of that branch. Under **Settings → Pages**, the source is **Deploy from a branch → main / (root)**.
 
-The initial lineup and the original combined Beaver Creek Lodge / Autograph Collection Hotels wordmark were retained from the [original TV guide](https://beaver-creek-lodge-tv.paulintintin.chatgpt.site). Names and identifiers describe the property's guide, not a guarantee of a particular network feed or programming. Brand assets are not licensed for unrelated reuse.
+The initial lineup and the archived combined Beaver Creek Lodge / Autograph Collection Hotels wordmark were retained from the [original TV guide](https://beaver-creek-lodge-tv.paulintintin.chatgpt.site). Names and identifiers describe the property's guide, not a guarantee of a particular network feed or programming. Brand assets are not licensed for unrelated reuse.
 
 ## Files
 
 - `index.html`, `styles.css`: the guest-facing page and themes.
 - `app.mjs`: English/Spanish, saved preferences, and rendering.
 - `channels.mjs`, `search.mjs`: original lineup and search index/matching.
-- `beaver-creek-lodge.jpeg`, `tv.svg`: the supplied hotel lockup and the site's TV icon.
+- `beaver-creek-lodge-transparent.png`: the supplied transparent wordmark, used unchanged in light mode and recolored on screen in dark mode.
+- `beaver-creek-lodge.jpeg`, `tv.svg`: the archived original combined lockup and the site's TV icon.
