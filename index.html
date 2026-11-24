@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#151717">
+  <meta name="description" content="Find your in-room TV channel at Beaver Creek Lodge by name or number.">
+  <title>TV Channel Finder | Beaver Creek Lodge</title>
+  <link rel="icon" href="./tv.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script>
+    try {
+      if (localStorage.getItem('bcl-tv-theme') === 'light') {
+        document.documentElement.dataset.theme = 'light';
+        document.querySelector('meta[name="theme-color"]').content = '#f6f3ed';
+      }
+    } catch (_) {}
+  </script>
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#channel-search" data-copy="skip">Skip to channel search</a>
+  <main class="finder">
+    <header class="masthead">
+      <div class="preferences">
+        <button type="button" id="language" class="preference" lang="es" aria-label="Cambiar a español">ES</button>
+        <button type="button" id="theme" class="preference" aria-label="Light mode" aria-pressed="false">
+          <svg class="sun" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+          <svg class="moon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20.5 14.2A8.7 8.7 0 0 1 9.8 3.5a8.7 8.7 0 1 0 10.7 10.7Z"/></svg>
+        </button>
+      </div>
+      <div class="wordmark">
+        <img src="./beaver-creek-lodge.jpeg" alt="Beaver Creek Lodge, Autograph Collection Hotels" width="751" height="258" fetchpriority="high">
+      </div>
+    </header>
+
+    <h1 data-copy="heading">TV Channel Finder</h1>
+    <form class="search" role="search" id="search-form">
+      <svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+      <label class="sr-only" for="channel-search" data-copy="placeholder">Search by channel name or number</label>
+      <input id="channel-search" type="search" placeholder="Search by channel name or number" aria-controls="channels" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" maxlength="120">
+      <button id="clear" type="button" aria-label="Clear search" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"/></svg>
+      </button>
+    </form>
+
+    <p id="status" class="sr-only" role="status"></p>
+    <p id="no-results" data-copy="empty" hidden>No channels found.</p>
+    <ul id="channels" class="channels" role="list" aria-label="Channels"></ul>
+    <noscript><p>This TV guide needs JavaScript. Esta guía necesita JavaScript.</p></noscript>
+  </main>
+</body>
+</html>
