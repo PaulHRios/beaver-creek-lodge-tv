@@ -44,6 +44,17 @@
       </button>
     </form>
 
+    <div class="filters" id="filters" role="group" aria-label="Channel categories">
+      <button type="button" data-category="all" aria-pressed="true" aria-controls="channels">All</button>
+      <button type="button" data-category="sports" aria-pressed="false" aria-controls="channels">Sports</button>
+      <button type="button" data-category="news" aria-pressed="false" aria-controls="channels">News</button>
+      <button type="button" data-category="entertainment" aria-pressed="false" aria-controls="channels">Movies &amp; TV</button>
+      <button type="button" data-category="family" aria-pressed="false" aria-controls="channels">Family</button>
+      <button type="button" data-category="spanish" aria-pressed="false" aria-controls="channels">En español</button>
+      <button type="button" data-category="hotel" aria-pressed="false" aria-controls="channels">At the lodge</button>
+      <button type="button" data-category="general" aria-pressed="false" aria-controls="channels">More channels</button>
+    </div>
+
     <p id="status" class="sr-only" role="status"></p>
     <p id="no-results" data-copy="empty" hidden>No channels found.</p>
     <ul id="channels" class="channels" role="list" aria-label="Channels"></ul>

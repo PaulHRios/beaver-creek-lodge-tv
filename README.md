@@ -4,7 +4,7 @@ A mobile-first, bilingual guide to in-room television. No account, build step, n
 
 ## Update the lineup
 
-1. Edit **`channels.mjs`**. Each record has an `id` (TV channel number, stored as a string to preserve zeros), `identifier` (exactly as shown on the in-room TV guide), `name` (display name), `category` (source metadata, not shown on the site), and `aliases` (optional abbreviations and alternative names for search).
+1. Edit **`channels.mjs`**. Each record has an `id` (TV channel number, stored as a string to preserve zeros), `identifier` (exactly as shown on the in-room TV guide), `name` (display name), `category` (controls which optional category filter includes the channel), and `aliases` (optional abbreviations and alternative names for search).
 2. Verify lineup changes on the hotel TVs. Keep channels with identical names but different channel numbers as separate records. The initial lineup has 74 entries; channels 02, 06, 33, 48, 68, 75 and 76 are intentionally absent.
 3. Channel 80 is displayed as **HDMI 1**. For this special entry, edit the guest-facing label and its search aliases (Roku, Netflix and YouTube) in `search.mjs`, and the front-desk note in both languages in `app.mjs`. Keep its original guide record and identifier in `channels.mjs`.
 4. Preview with `python3 -m http.server 8000`, then open `http://localhost:8000`. JavaScript modules require an HTTP server, not a double-click on the HTML file.

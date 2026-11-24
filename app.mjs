@@ -6,6 +6,8 @@ const messages = {
     skip: 'Skip to channel search', empty: 'No channels found.', list: 'Channels',
     clear: 'Clear search', light: 'Light mode', channel: 'Channel',
     roku: 'Ask the front desk to bring a Roku to your room for Netflix or YouTube.',
+    filters: 'Channel categories',
+    categories: { all: 'All', sports: 'Sports', news: 'News', entertainment: 'Movies & TV', family: 'Family', spanish: 'En español', hotel: 'At the lodge', general: 'More channels' },
     results: count => `${count} ${count === 1 ? 'channel' : 'channels'} found.`,
   },
   es: {
@@ -13,6 +15,8 @@ const messages = {
     skip: 'Ir al buscador de canales', empty: 'No se encontraron canales.', list: 'Canales',
     clear: 'Borrar búsqueda', light: 'Modo claro', channel: 'Canal',
     roku: 'Pide en recepción que te lleven un Roku a tu habitación para ver Netflix o YouTube.',
+    filters: 'Categorías de canales',
+    categories: { all: 'Todos', sports: 'Deportes', news: 'Noticias', entertainment: 'Cine y TV', family: 'Familia', spanish: 'En español', hotel: 'En el hotel', general: 'Otros canales' },
     results: count => count === 1 ? 'Se encontró 1 canal.' : `Se encontraron ${count} canales.`,
   },
 };
@@ -25,6 +29,16 @@ const clear = find('#clear');
 const theme = find('#theme');
 const language = find('#language');
 const empty = find('#no-results');
+const filters = find('#filters');
+const filterButtons = [...filters.querySelectorAll('button')];
+let category = 'all';
+let hadQuery = false;
+function updateFilter(next) {
+  category = next;
+  for (const button of filterButtons) {
+    button.setAttribute('aria-pressed', String(button.dataset.category === category));
+  }
+}
 const titleMeta = find('meta[name="theme-color"]');
 const read = key => { try { return localStorage.getItem(key); } catch { return null; } };
 const save = (key, value) => { try { localStorage.setItem(key, value); } catch { /* optional persistence */ } };
@@ -32,7 +46,8 @@ let lang = read('bcl-tv-language') === 'es' ? 'es' : 'en';
 let announceTimer;
 
 function render(announce = true) {
-  const result = searchChannels(input.value);
+  const result = searchChannels(input.value)
+    .filter(channel => category === 'all' || channel.category === category);
   const copy = messages[lang];
   const fragment = document.createDocumentFragment();
   for (const { id, name } of result) {
@@ -75,6 +90,8 @@ function updateLanguage(announce) {
   document.title = copy.heading + ' | Beaver Creek Lodge';
   input.placeholder = copy.placeholder;
   list.setAttribute('aria-label', copy.list);
+  filters.setAttribute('aria-label', copy.filters);
+  for (const button of filterButtons) button.textContent = copy.categories[button.dataset.category];
   clear.setAttribute('aria-label', copy.clear);
   theme.setAttribute('aria-label', copy.light);
   language.textContent = lang === 'en' ? 'ES' : 'EN';
@@ -93,12 +110,28 @@ function updateTheme(value, persist = false) {
 
 function clearQuery() {
   input.value = '';
+  hadQuery = false;
   render();
   input.focus();
 }
 
 find('#search-form').addEventListener('submit', event => event.preventDefault());
-input.addEventListener('input', () => render());
+input.addEventListener('input', () => {
+  const hasQuery = !!input.value.trim();
+  // A new search starts across the whole lineup. A guest may narrow it after typing.
+  if (hasQuery && !hadQuery && category !== 'all') {
+    updateFilter('all');
+    filters.scrollLeft = 0;
+  }
+  hadQuery = hasQuery;
+  render();
+});
+for (const button of filterButtons) {
+  button.addEventListener('click', () => {
+    updateFilter(button.dataset.category);
+    render();
+  });
+}
 input.addEventListener('keydown', event => {
   if (event.key === 'Escape' && input.value) {
     event.preventDefault();
