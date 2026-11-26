@@ -7,7 +7,7 @@
   <meta name="description" content="Find your in-room TV channel at Beaver Creek Lodge by name or number.">
   <title>TV Channel Finder | Beaver Creek Lodge</title>
   <link rel="icon" href="./tv.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=logo-color-1">
+  <link rel="stylesheet" href="./styles.css?v=analytics-1">
   <script>
     try {
       if (localStorage.getItem('bcl-tv-theme') === 'light') {
@@ -16,7 +16,7 @@
       }
     } catch (_) {}
   </script>
-  <script type="module" src="./app.mjs?v=categories-1"></script>
+  <script type="module" src="./app.mjs?v=analytics-1"></script>
 </head>
 <body>
   <a class="skip-link" href="#channel-search" data-copy="skip">Skip to channel search</a>
@@ -59,6 +59,7 @@
     <p id="no-results" data-copy="empty" hidden>No channels found.</p>
     <ul id="channels" class="channels" role="list" aria-label="Channels"></ul>
     <noscript><p>This TV guide needs JavaScript. Esta guía necesita JavaScript.</p></noscript>
+    <p class="privacy-footer"><a href="./privacy.html">Privacy / Privacidad</a></p>
   </main>
 </body>
 </html>

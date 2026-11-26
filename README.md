@@ -25,3 +25,7 @@ The initial lineup and the archived combined Beaver Creek Lodge / Autograph Coll
 - `channels.mjs`, `search.mjs`: original lineup and search index/matching.
 - `beaver-creek-lodge-transparent.png`: the supplied transparent wordmark, used unchanged in light mode and lightened on screen in dark mode to preserve its burgundy and teal colors.
 - `beaver-creek-lodge.jpeg`, `tv.svg`: the archived original combined lockup and the site's TV icon.
+
+## Analytics
+
+See [anonymous measurement and owner-only dashboard setup](analytics-backend/README.md).

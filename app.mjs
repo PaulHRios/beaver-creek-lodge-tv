@@ -1,4 +1,5 @@
 import { searchChannels } from './search.mjs';
+import { initAnalytics } from './analytics.mjs';
 
 const messages = {
   en: {
@@ -44,6 +45,7 @@ const read = key => { try { return localStorage.getItem(key); } catch { return n
 const save = (key, value) => { try { localStorage.setItem(key, value); } catch { /* optional persistence */ } };
 let lang = read('bcl-tv-language') === 'es' ? 'es' : 'en';
 let announceTimer;
+const analytics = initAnalytics(() => ({theme:root.dataset.theme,lang}));
 
 function render(announce = true) {
   const result = searchChannels(input.value)
@@ -53,6 +55,7 @@ function render(announce = true) {
   for (const { id, name } of result) {
     const item = document.createElement('li');
     item.className = 'channel';
+    item.dataset.channel = id;
     const label = document.createElement('span');
     label.className = 'channel-name';
     label.textContent = name;
@@ -81,6 +84,7 @@ function render(announce = true) {
       status.textContent = result.length ? copy.results(result.length) : copy.empty;
     }, 180);
   }
+  return result;
 }
 
 function updateLanguage(announce) {
@@ -109,6 +113,7 @@ function updateTheme(value, persist = false) {
 }
 
 function clearQuery() {
+  analytics.clear();
   input.value = '';
   hadQuery = false;
   render();
@@ -124,10 +129,11 @@ input.addEventListener('input', () => {
     filters.scrollLeft = 0;
   }
   hadQuery = hasQuery;
-  render();
+  analytics.search(input.value,render());
 });
 for (const button of filterButtons) {
   button.addEventListener('click', () => {
+    analytics.interaction('filter',button.dataset.category);
     updateFilter(button.dataset.category);
     render();
   });
@@ -139,10 +145,18 @@ input.addEventListener('keydown', event => {
   }
 });
 clear.addEventListener('click', clearQuery);
-theme.addEventListener('click', () => updateTheme(root.dataset.theme === 'light' ? 'dark' : 'light', true));
+theme.addEventListener('click', () => {
+  updateTheme(root.dataset.theme === 'light' ? 'dark' : 'light', true);
+  analytics.interaction('theme',root.dataset.theme);
+});
+list.addEventListener('click', event => {
+  const item = event.target.closest('li[data-channel]');
+  if (item) analytics.select(item.dataset.channel);
+});
 language.addEventListener('click', () => {
   lang = lang === 'en' ? 'es' : 'en';
   save('bcl-tv-language', lang);
+  analytics.interaction('language',lang);
   updateLanguage(true);
 });
 updateTheme(root.dataset.theme);

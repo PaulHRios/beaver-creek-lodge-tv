@@ -75,3 +75,6 @@ h1 { text-align: center; margin: 1.2rem 0 1rem; font: 400 clamp(1.75rem, 7.4vw, 
 @media (min-width: 42rem) { .finder { padding-top: .85rem; } .masthead { padding-top: .5rem; } .wordmark { margin-top: .8rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
 @media print { .preferences, .search, .filters, .skip-link { display: none !important; } body { background: #fff; color: #000; } .channel-number { color: #000; } .channel { border-color: #aaa; break-inside: avoid; } }
+
+.privacy-footer { margin: 1.25rem 0 .5rem; text-align: center; font-size: .75rem; }
+.privacy-footer a { color: inherit; text-underline-offset: .2em; }
