@@ -1,32 +1,33 @@
 # TV guide analytics
 Zero-cookie aggregate measurement. The visitor-facing guide stays on GitHub Pages;
-the separately deployed Google Apps Script collector accepts write-only anonymous
-batches and the dashboard reads the same owner-private sheet. No Google Analytics
-tag, guest consent modal, storage identifier, fingerprint, GPS, raw IP, full URL,
-full referrer, free-form search text, or raw user agent is collected by our code.
-No paid tiers, cloud billing, domain, add-on or API credential is needed.
+a separately deployed Google Apps Script service. The public writer cannot read
+stats; the dashboard is a **different, owner-only version** of the same project
+so they share private Script Properties. No Google Sheets or Drive permissions,
+Google Analytics tag, guest consent modal, storage identifier, fingerprint, GPS,
+raw IP, full URL, full referrer, free-form search text or raw user agent.
 
 ## Setup
-1. In the owner's Google account, create a restricted spreadsheet named TV Guide
-   Analytics. Add a tab named `metrics` with row 1:
-   `bucket, metric, label, count, sum` (one cell per field). Do not share the sheet.
-2. Create an Apps Script project for **collector**. Add both .gs files and set the
-   Script property `SPREADSHEET_ID` to the private sheet ID. Deploy the web app
-   with execution as owner and access as **Anyone** so only anonymous POSTs work.
-   This app offers no data-reading method. Install a daily time-driven trigger
-   for `pruneMetrics_` via the editor, leaving 93 days of data.
-3. Create a **separate** Apps Script project for **dashboard**. Add Code.gs and
-   Index.html and set the same property. Deploy as owner, access **Only myself**.
-   Never publish this project as Anyone or use its URL in the guide.
-4. Add only the public write-only collector's `/exec` URL to
-   `analytics-config.mjs`. An unconfigured URL leaves collection completely off.
-   The URL is not a password; never commit a private sheet ID, owner address,
-   credentials or dashboard URL. To turn off, remove the config and redeploy.
-5. Confirm the collector answers GET with only a generic notice. Verify a
-   controlled real search shows up in the private dashboard and that a separate
-   signed-out browser cannot open the dashboard. Check mobile/desktop, GPC/DNT
-   and opt-out, and verify the printed QR still resolves to the unchanged guide.
-   Do not present local tests as proof of live data receipt.
+1. Create a private Apps Script project in the owner's account. Add both
+   collector .gs files; deploy the web app, execute as owner, access **Anyone**.
+   Record this write-only deployment. Its immutable version must contain no
+   dashboard or read function. Disable uncaught exception logging.
+2. After pinning the public version, replace its `doGet` definition in the
+   **editor source** with the dashboard Code.gs definitions, leaving doPost and
+   the allowlist in place. Add the dashboard Index.html. Create a **new**
+   deployment, execute as owner, access **Only myself**. Never change the
+   public deployment to this version, never publish the private version as
+   Anyone, and do not share the Apps Script project. A future collector update
+   must publish a new write-only version (remove dashboard definitions and
+   files before versioning). The two deployments share only aggregated values
+   stored on the server.
+3. Add only the public collector's `/exec` URL to `analytics-config.mjs`
+   after it receives a test and the owner-only dashboard is verified. Missing
+   URL disables all collection. Do not commit the private dashboard URL or
+   credentials. To turn off, clear the client config and redeploy.
+4. Confirm the collector GET returns only the generic write-only notice.
+   Verify a controlled real search appears in the dashboard, and that a
+   separately signed-out browser cannot open the private dashboard. Check
+   desktop/mobile, GPC/DNT and opt-out. Test the unchanged printed QR target.
 
 ## Interpretation and limits
 - Sessions are individual page opens, not people. Tabs and reloads can count
@@ -49,9 +50,10 @@ No paid tiers, cloud billing, domain, add-on or API credential is needed.
   exits, network failures and free quotas can cause undercounting. The endpoint
   is public and validates metric names and labels, but request counts can be
   spoofed; it is not authoritative for billing or security.
-- The public endpoint accepts at most 20 known events per batch, 240 per page,
-  and at most 3,000 writes/day. Free provider quotas can stop ingestion
-  earlier. No overage, upgrade, or payment is configured by this code.
+- The public endpoint accepts at most 20 known events per batch and 240 per
+  page. It stores bounded hourly aggregates. Up to 93 days are retained under
+  the storage cap; busy periods can exhaust a bucket or shorten retention. Free
+  provider limits can stop ingestion. No billing account or overage is configured.
 - Guest notice at `/privacy.html` offers a browser-local opt-out without
   analytics cookies. GPC/DNT skip all collection. Activate only where this
   aggregate measurement and notice match hotel policy and applicable rules.

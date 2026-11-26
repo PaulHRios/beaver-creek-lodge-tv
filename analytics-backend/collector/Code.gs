@@ -42,45 +42,38 @@ function normalizeBatch_(body, now) {
 }
 function doPost(e) {
   const reply = value => ContentService.createTextOutput(value);
+  const now=Date.now();
   let rows;
-  try {rows=normalizeBatch_(e?.postData?.contents,Date.now());} catch {return reply('ignored');}
+  try {rows=normalizeBatch_(e?.postData?.contents,now);} catch {return reply('ignored');}
   const lock=LockService.getScriptLock();
-  if (!lock.tryLock(1000)) return reply('busy');
+  if (!lock.tryLock(750)) return reply('busy');
   try {
-    const properties=PropertiesService.getScriptProperties();
-    const id=properties.getProperty('SPREADSHEET_ID');
-    if (!id) return reply('disabled');
-    const today=new Date().toISOString().slice(0,10);
-    const budget=(properties.getProperty('WRITE_BUDGET')||'').split(':');
-    const count=budget[0]===today?Number(budget[1])||0:0;
-    if (count>=3000) return reply('limited');
-    const sheet=SpreadsheetApp.openById(id).getSheetByName('metrics');
-    if (!sheet) return reply('disabled');
-    const start=sheet.getLastRow()+1;
-    const needed=start+rows.length-1-sheet.getMaxRows();
-    if (needed>0) sheet.insertRowsAfter(sheet.getMaxRows(),Math.max(needed,500));
-    // Prevent the sheet from interpreting timestamps or allowlisted labels as formulas/numbers.
-    sheet.getRange(start,1,rows.length,3).setNumberFormat('@');
-    sheet.getRange(start,1,rows.length,5).setValues(rows);
-    properties.setProperty('WRITE_BUDGET',today+':'+(count+1));
-    SpreadsheetApp.flush();
+    const store=PropertiesService.getScriptProperties();
+    const hour=new Date(Math.floor(now/3600000)*3600000).toISOString().slice(0,13);
+    const key='h:'+hour;
+    let item=JSON.parse(store.getProperty(key)||'{"writes":0,"rows":{}}');
+    if (item.writes>=250) return reply('limited');
+    if (!item.writes) {
+      const cutoff=new Date(now-93*86400000).toISOString().slice(0,13);
+      const items=store.getProperties();
+      const hours=Object.keys(items).filter(k=>k.startsWith('h:')).sort();
+      let bytes=hours.reduce((n,k)=>n+3*(items[k].length+k.length),0);
+      for (const k of hours) {
+        if (k.slice(2)>=cutoff && bytes<=350000) break;
+        store.deleteProperty(k);
+        bytes-=3*(items[k].length+k.length);
+      }
+    }
+    for (const [bucket,metric,label,count,sum] of rows) {
+      const k=JSON.stringify([bucket.slice(11,16),metric,label]);
+      const v=item.rows[k]||[0,0];
+      v[0]+=count;v[1]+=sum;item.rows[k]=v;
+    }
+    item.writes++;
+    const encoded=JSON.stringify(item);
+    if (encoded.length>2800) return reply('limited');
+    store.setProperty(key,encoded);
     return reply('ok');
   } catch {return reply('unavailable');}
   finally {lock.releaseLock();}
-}
-// Periodic owner-installed trigger. Fixed retention, never based on guest input.
-function pruneMetrics_() {
-  const id=PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID');
-  if (!id) return;
-  const lock=LockService.getScriptLock();
-  if (!lock.tryLock(1000)) return;
-  try {
-    const sheet=SpreadsheetApp.openById(id).getSheetByName('metrics');
-    if (!sheet || sheet.getLastRow()<2) return;
-    const cutoff=new Date(Date.now()-93*86400000).toISOString().slice(0,10);
-    const values=sheet.getRange(2,1,sheet.getLastRow()-1,1).getDisplayValues();
-    const index=values.findIndex(([bucket])=>bucket.slice(0,10)>=cutoff);
-    const count=index===-1?values.length:index;
-    if(count) sheet.deleteRows(2,count);
-  } finally {lock.releaseLock();}
 }
